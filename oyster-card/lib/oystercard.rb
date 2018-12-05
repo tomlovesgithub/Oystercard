@@ -14,20 +14,22 @@ class Oystercard
     balance + value > LIMIT ? raise("top up exceeds maximum balance(£#{LIMIT}) by #{exceed}") : @balance += value
   end
 
-  def deduct(value)
-    @balance -= value
-  end
-
   def in_journey?
     @cardstate
   end
 
   def touch_in
-   balance < MINIMUM ? raise("Balance less than (£#{Oystercard::MINIMUM}) Please top up") : @cardstate = true
+   balance < MINIMUM ? raise("Balance less than (£#{MINIMUM}) Please top up") : @cardstate = true
   end
 
   def touch_out
+    deduct(MINIMUM)
     @cardstate = false
+  end
+
+  private
+  def deduct(value)
+    @balance -= value
   end
 
 end

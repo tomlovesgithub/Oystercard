@@ -26,13 +26,14 @@ describe Oystercard do
     end
   end
 
-  describe '#deduct' do
-    it 'deducts value from balance' do
-      card.top_up(Oystercard::LIMIT)
-      value = rand(1..90)
-      expect { card.deduct(value) }.to change { card.balance }.by(-value)
-    end
-  end
+  # private method cannot be tested
+  # describe '#deduct' do
+  #   it 'deducts value from balance' do
+  #     card.top_up(Oystercard::LIMIT)
+  #     value = rand(1..90)
+  #     expect { card.deduct(value) }.to change { card.balance }.by(-value)
+  #   end
+  # end
 
   describe '#injourney' do
     card = Oystercard.new
@@ -50,6 +51,14 @@ describe Oystercard do
   describe '#touch_in' do
     it " won't allow to touch_in if balance lower than minimum" do
       expect { card.touch_in }.to raise_error "Balance less than (£#{Oystercard::MINIMUM}) Please top up"
+    end
+  end
+
+  describe '#touch_out' do
+    it " will change the balance by the minimum fare" do
+      card.top_up(Oystercard::LIMIT)
+      card.touch_in
+      expect { card.touch_out }.to change { card.balance }.by(-Oystercard::MINIMUM)
     end
   end
 
