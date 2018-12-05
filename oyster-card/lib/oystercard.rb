@@ -1,7 +1,8 @@
 class Oystercard
 
   attr_accessor :balance
-  MAX_BALANCE = 90
+  LIMIT = 90
+  MINIMUM = 1
 
   def initialize
     @balance = 0
@@ -9,7 +10,8 @@ class Oystercard
   end
 
   def top_up(value)
-    balance + value > MAX_BALANCE ? raise("top up exceeds maximum balance(#{Oystercard::MAX_BALANCE}) by #{(balance + value - Oystercard::MAX_BALANCE)}") : @balance += value
+    exceed = (balance + value - LIMIT)
+    balance + value > LIMIT ? raise("top up exceeds maximum balance(£#{LIMIT}) by #{exceed}") : @balance += value
   end
 
   def deduct(value)
@@ -21,7 +23,7 @@ class Oystercard
   end
 
   def touch_in
-    @cardstate = true
+   balance < MINIMUM ? raise("Balance less than (£#{Oystercard::MINIMUM}) Please top up") : @cardstate = true
   end
 
   def touch_out
