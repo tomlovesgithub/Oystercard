@@ -1,13 +1,13 @@
 class Oystercard
 
-  attr_accessor :balance, :in_station
+  attr_accessor :balance, :entry_station
   LIMIT = 90
   MINIMUM = 1
 
   def initialize
     @balance = 0
     @cardstate = false
-    @in_station = nil
+    @entry_station = nil
     # @out_station = nil
   end
 
@@ -22,7 +22,7 @@ class Oystercard
 
   def touch_in(station)
     balance < MINIMUM ? raise("Balance less than (£#{MINIMUM}) Please top up") : @cardstate = true
-    @in_station = station 
+    @entry_station = station
   end
 
   def touch_out
