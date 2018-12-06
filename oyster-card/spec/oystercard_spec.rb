@@ -3,7 +3,7 @@ require 'oystercard'
 describe Oystercard do
 
   let(:card) { Oystercard.new }
-  let(:station) { double :station, station_name: 'big_london_station'}
+  let(:station) { double :station, name: 'big_london_station'}
 
   context "Brand new Oystercard" do
 
@@ -38,7 +38,7 @@ describe Oystercard do
       it " will change the balance by the minimum fare" do
         card.top_up(Oystercard::LIMIT)
         card.touch_in(station)
-        expect { card.touch_out }.to change { card.balance }.by(-Oystercard::MINIMUM)
+        expect { card.touch_out(station) }.to change { card.balance }.by(-Oystercard::MINIMUM)
       end
     end
 
@@ -52,13 +52,24 @@ describe Oystercard do
       expect { card.touch_in(station) }.to change { card.in_journey? }.from(false).to(true)
     end
 
-    it " #touch_in should remembers touch_in station" do
-      expect { card.touch_in(station.station_name) }.to change { card.entry_station }.from(nil).to("big_london_station")
+    it " #touch_in should remember touch_in station" do
+      expect { card.touch_in(station) }.to change { card.entry_station }.from(nil).to(station.name)
     end
 
-    it ' #in_journey should false after touch_in then touch_out' do
-      card.touch_in(station)
-      expect { card.touch_out }.to change { card.in_journey? }.from(true).to(false)
+    context "oyster card is topped up and touched in" do
+      before { card.touch_in(station)}
+      
+      it ' #in_journey should false after touch_in then touch_out' do
+        expect { card.touch_out(station) }.to change { card.in_journey? }.from(true).to(false)
+      end
+
+      it " #touch_out should add an entry to journey_history" do
+        expect { card.touch_out(station) }.to change { card.journey_history.count}.from(0).to(1)
+      end
+
+      it " #touch_out should add an entry of the journey to journey_history" do
+        expect { card.touch_out(station) }.to change { card.journey_history}.from([]).to([{in:(station.name), out:(station.name) }])
+      end
     end
   end
 

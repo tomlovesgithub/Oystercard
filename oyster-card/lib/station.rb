@@ -1,9 +1,9 @@
-# class Station
-#
-#   def initialize(station_name)
-#     @station_name = station_name
-#   end
-#
-#   attr_accessor :station_name
-#
-# end
+class Station
+
+  def initialize(name)
+    @name = name
+  end
+
+  attr_reader :name
+
+end
