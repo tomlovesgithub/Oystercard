@@ -48,27 +48,15 @@ describe Oystercard do
 
     before { card.top_up(Oystercard::LIMIT)}
 
-    it ' #injourney should be true after touch_in' do
-      expect { card.touch_in(station) }.to change { card.in_journey? }.from(false).to(true)
-    end
-
-    it " #touch_in should remember touch_in station" do
-      expect { card.touch_in(station) }.to change { card.entry_station }.from(nil).to(station.name)
-    end
-
     context "oyster card is topped up and touched in" do
       before { card.touch_in(station)}
-      
-      it ' #in_journey should false after touch_in then touch_out' do
-        expect { card.touch_out(station) }.to change { card.in_journey? }.from(true).to(false)
-      end
 
       it " #touch_out should add an entry to journey_history" do
         expect { card.touch_out(station) }.to change { card.journey_history.count}.from(0).to(1)
       end
 
       it " #touch_out should add an entry of the journey to journey_history" do
-        expect { card.touch_out(station) }.to change { card.journey_history}.from([]).to([{in:(station.name), out:(station.name) }])
+        expect { card.touch_out(station) }.to change { card.journey_history}.from([]).to([{entry_station:(station.name), exit_station:(station.name) }])
       end
     end
   end
